@@ -13,22 +13,23 @@ class Config:
         self.capas = []
     
     #METODO PARA GENERAR PESOS
-    def Generar_pesos(self):
+    def Generar_pesos(self, row, col):
         Matriz = []
-        for N in range(len(self.Salidas)):
+        for N in range(row):
             Fila = []
-            for M in range(len(self.Entradas)):
+            for M in range(col):
                 Fila.append(round(rn.uniform(-1, 1), 2))
             Matriz.append(Fila)
         return Matriz
 
     #METODO PARA GENERAR UMBRALES
-    def Generar_Umbrales(self):
+    def Generar_Umbrales(self, row):
         Fila = []
-        for N in range(len(self.Salidas)):
+        for N in range(row):
             Fila.append(round(rn.uniform(-1, 1), 2))
         return Fila
 
+    # LLENAR MATRICES ENTRADAS Y SALIDAS
     def NormalizarDatos(self, ruta):
         Matriz = pd.read_csv(ruta, delimiter=' ')
         col = Matriz.columns
@@ -47,18 +48,20 @@ class Config:
                     Fila.append(column[j,i])
                 self.Salidas.append(Fila)
 
-    def InicializarCapas(self, numeroCapas, rangoA, rangoB):
-        encabezado = ['Capa', 'Neuronas']
-        for I in range(numeroCapas):
-            filas = []
-            filas.append(I+1)
-            filas.append(round(rn.uniform(rangoA, rangoB)))
-            self.capas.append(filas)
-
+    # AGREGAR CAPAS OCULTAS
+    def AgregarCapas(self, capa, neuronas, funcActivacion):
+        encabezado = ['Capa', 'Neuronas', 'Func Activacion']
+        self.capas.append([capa, neuronas, funcActivacion])
+        
         return pd.DataFrame(data=self.capas, columns=encabezado)
 
+    # INICIAR ENTRENAMIENTO
     def Entrenar(self, rataAprendizaje, errorLineal, numeroIteraciones):
         print("OK")
+
+    # LIMPIAR CAPAS
+    def Limpiar(self):
+        self.capas = []
 
 if __name__ == '__main__':
     print("Hola") 
