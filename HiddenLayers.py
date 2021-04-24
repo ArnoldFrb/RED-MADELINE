@@ -41,7 +41,7 @@ class HiddenLayers:
         for N in range(len(self.pesos)):
             sumatoria = 0       # SUMATORIA DE LA FUNCION SOMA
             for M in range(self.pesos.ndim):
-                sumatoria += (entrada[M], self.pesos[M][N])
+                sumatoria += (entrada[M] + self.pesos[M][N])
             soma.append(sumatoria - self.umbrales[N])
         return soma
 
@@ -98,3 +98,49 @@ class HiddenLayers:
 if __name__ == '__main__':
     entrenar = HiddenLayers(np.array([[0, 0], [0, 1], [1, 0], [1, 1]]), np.array([0, 0, 0, 1]), np.array([0.8, -0.6]), np.array([0.1]), 1, 1, 0.1, 2)
     entrenar.Entranamiento()
+
+import numpy as np
+#
+
+# [1][1][1][1][1]_[1][1][1]
+# [1][0][1][1][0]_[1][1][1]
+# [1][1][0][1][1]_[1][1][1]
+
+
+p = 3
+x = [[1,1,1,1,1],[1,0,1,1,0],[1,1,0,1,1]]
+y = [[1,1,1],[1,1,1],[1,1,1]]
+n1 = 7
+n2 = 5
+#
+w1 = [[-1,0,1,1,0,1,1],[-1,0,1,1,0,1,0],[-1,0,1,1,0,1,0],[-1,0,1,1,0,1,0],[-1,0,1,1,0,1,0]]
+w2 = [[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0]]
+w3 = [[-1,0,1,1,0],[-1,0,1,1,0],[-1,0,1,1,0]]
+#
+u = [[1],[1],[1],[1],[1],[1],[1]]
+u = [[1],[1],[1],[1],[1]]
+u = [[1],[1],[1]]
+#
+r = 1
+e = 0.1
+# class HiddenLayers:
+#     def __init__(self, entradas, salidas, pesos, umbrales, funcActivacion, rataAprendizaje, errorMaximoPermitido, numeroIteraciones):
+#         self.entradas = entradas
+#         self.salidas = salidas
+#         self.pesos = pesos
+#         self.umbrales = umbrales
+#         self.funcActivacion = funcActivacion
+#         self.rataAprendizaje = rataAprendizaje
+#         self.numeroIteraciones = numeroIteraciones
+#         self.errorMaximoPermitido = errorMaximoPermitido
+
+#     def SalidaNuevaCapa (self, entradas, n_capa, pesos, funcion):
+#         sum = 0
+#         for j in range(len(entradas[0])) :
+#             for i in range(n_capa) :
+#                 sum += (entradas[j] * pesos[j][i]) - umbrales[i]
+        
+#         return funcion(sum)
+
+#     def 
+
