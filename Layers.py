@@ -16,14 +16,16 @@ class Layers:
         return soma
 
     def _FuncionActivacion(self, e):
+        op = 0
         if ("SIGMOIDE" == e):
-            return 1
+            op = 1
 
         if ("TANGENTE H." == e):
-            return 2
+            op = 2
 
         if ("GAUSSIANA" == e):
-            return 3
+            op = 3
+        return op
 
     #NOMBRE DE LA FUNCION SALIDA
     def FuncionActivacion(self, func, salidaSoma):

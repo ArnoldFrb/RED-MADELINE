@@ -73,8 +73,8 @@ class Config:
                 for J in range(len(self.Entradas[0])):
                     entrada = self.Entradas[:,J]
                     #salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[J,:])
-                    
-                    print(layers.FuncionSoma(entrada, pesos, umblrales))
+                    func = layers._FuncionActivacion(self.capas[I][2])
+                    print(layers.FuncionActivacion(func, layers.FuncionSoma(entrada, pesos, umblrales)))
                     
 
             if(I > 0 & I < (len(self.capas) - 2)):
