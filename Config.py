@@ -66,6 +66,8 @@ class Config:
         s = True
         e = False
         for I in range(len(self.capas)):
+
+            # CONDICION PARA ENTRADA Y CAPA 1
             if(I == 0):
                 pesos = self.Generar_pesos(len(self.Entradas), self.capas[I][1])
                 umblrales = self.Generar_Umbrales(self.capas[I][1])
@@ -74,11 +76,13 @@ class Config:
                     entrada = self.Entradas[:,J]
                     #salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[J,:])
                     func = layers._FuncionActivacion(self.capas[I][2])
-                    print(layers.FuncionActivacion(func, layers.FuncionSoma(entrada, pesos, umblrales)))
-                    
+                    print(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entrada, pesos, umblrales)))
 
+             # CONDICION PARA CAPAS INTERMEDIAS
             if(I > 0 & I < (len(self.capas) - 2)):
                 print(I-1, I)
+
+            # CONDICION PARA LA ULTIMA CAPA Y SALIDAS
             if(I >= (len(self.capas) - 1)):
                 print(I, e)
 
