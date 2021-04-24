@@ -1,18 +1,24 @@
 import numpy as np
+import random as rn
 
 class HiddenLayers:
 
-    def __init__(self, entradas, salidas, pesos, umbrales, funcActivacion, rataAprendizaje, errorMaximoPermitido, numeroIteraciones):
-        self.entradas = entradas
-        self.salidas = salidas
-        self.pesos = pesos
-        self.umbrales = umbrales
-        self.funcActivacion = funcActivacion
+    def __init__(self, rataAprendizaje, errorMaximoPermitido, numeroIteraciones):
+        self.entradas = []
+        self.salidas = []
+        self.pesos = []
+        self.umbrales = []
+        self.funcActivacion = 0
         self.rataAprendizaje = rataAprendizaje
         self.numeroIteraciones = numeroIteraciones
         self.errorMaximoPermitido = errorMaximoPermitido
 
-    def Entranamiento(self):
+    def Entranamiento(self, entradas, salidas, pesos, umbrales, funcActivacion):
+
+        self.entradas = entradas
+        self.salidas = salidas
+        self.pesos = pesos
+        self.umbrales = umbrales
 
         # INICIAR ENTRENAMIENTO
         iteracion = 0
@@ -25,42 +31,31 @@ class HiddenLayers:
 
                 entrada = self.entradas[I,:]
                 salida = np.array([self.salidas[I]]) if self.salidas.ndim==1 else (self.salidas[I,:])
+
+                res = self.FuncionSoma(entrada)
                 
-                errorPatron = np.sum(self.ErrorLineal(salida, self.FuncionSoma(entrada))) / salida.ndim
-                _errorPatron.append(errorPatron)
-
-                errorMaximo = np.sum(_errorPatron) / len(self.entradas)
-
             #CONDICIONES DE PARADA
-            if((iteracion > self.numeroIteraciones-1) or (errorMaximo <= self.errorMaximoPermitido)):
+            if(iteracion > self.numeroIteraciones-1):
                 break
+
+        return res
+        
 
     # METODO PARA OBTENER LA FUNCION SOMA
     def FuncionSoma(self, entrada):
         soma = []       # SALIDA DE LA FUNCION SOMA
         for N in range(len(self.pesos)):
             sumatoria = 0       # SUMATORIA DE LA FUNCION SOMA
-            for M in range(self.pesos.ndim):
-                sumatoria += (entrada[M], self.pesos[M][N])
+            for M in range(len(self.pesos[0])):
+                sumatoria += (entrada[M] + self.pesos[N][M])
             soma.append(sumatoria - self.umbrales[N])
         return soma
 
     def ErrorLineal(self, salida, salidaSoma):
-        EL = []          #ERROR LINEAL
+        EL = []     # ERROR LINEAL
         for N in range(len(salidaSoma)):
-            EL.append(salida[N] - salidaSoma[N])
+            print(salida, salidaSoma)
         return EL
-
-    #METODO PARA ACTUALIZAR PESOS
-    def ActualizarPesos(self, errorLineal, entrada):
-        for N in range(len(self.pesos)):
-            for M in range(self.pesos.ndim):
-                self.pesos[N][M] += (self.rataAprendizaje * errorLineal[N] * entrada[M])
-
-    #METODO PARA ACTUALIZAR UMBRALES
-    def ActualizarUmbrales(self, errorLineal):
-        for N in range(len(self.umbrales)):
-            self.umbrales[N] += (self.rataAprendizaje * errorLineal[N] * 1)
 
     def _FuncionActivacion(self, e):
         if ("SIGMOIDE" == e):
@@ -96,5 +91,4 @@ class HiddenLayers:
         return Yr
 
 if __name__ == '__main__':
-    entrenar = HiddenLayers(np.array([[0, 0], [0, 1], [1, 0], [1, 1]]), np.array([0, 0, 0, 1]), np.array([0.8, -0.6]), np.array([0.1]), 1, 1, 0.1, 2)
-    entrenar.Entranamiento()
+    print('Ok')

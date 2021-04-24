@@ -2,6 +2,7 @@ import random as rn
 import numpy as np
 import pandas as pd
 import os
+from Layers import *
 
 class Config:
 
@@ -57,7 +58,29 @@ class Config:
 
     # INICIAR ENTRENAMIENTO
     def Entrenar(self, rataAprendizaje, errorLineal, numeroIteraciones):
-        print("OK")
+
+        layers = Layers()
+        self.Entradas = np.array(self.Entradas)
+        self.Salidas = np.array(self.Salidas)
+
+        s = True
+        e = False
+        for I in range(len(self.capas)):
+            if(I == 0):
+                pesos = self.Generar_pesos(len(self.Entradas), self.capas[I][1])
+                umblrales = self.Generar_Umbrales(self.capas[I][1])
+
+                for J in range(len(self.Entradas[0])):
+                    entrada = self.Entradas[:,J]
+                    #salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[J,:])
+                    
+                    print(layers.FuncionSoma(entrada, pesos, umblrales))
+                    
+
+            if(I > 0 & I < (len(self.capas) - 2)):
+                print(I-1, I)
+            if(I >= (len(self.capas) - 1)):
+                print(I, e)
 
     # LIMPIAR CAPAS
     def Limpiar(self):
