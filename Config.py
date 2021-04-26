@@ -61,10 +61,10 @@ class Config:
 
         layers = Layers()
         self.Entradas = np.array(self.Entradas)
-        self.Salidas = np.array(self.Salidas)
+        self.Salidas = self.NormalizarSalidas(self.Salidas) if len(self.Salidas)==1 else (self.Salidas)
+        EntradasCapas = []
+        _EntradasCapas = []
 
-        s = True
-        e = False
         for I in range(len(self.capas)):
 
             # CONDICION PARA ENTRADA Y CAPA 1
@@ -72,23 +72,74 @@ class Config:
                 pesos = self.Generar_pesos(len(self.Entradas), self.capas[I][1])
                 umblrales = self.Generar_Umbrales(self.capas[I][1])
 
-                for J in range(len(self.Entradas[0])):
-                    entrada = self.Entradas[:,J]
-                    #salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[J,:])
-                    func = layers._FuncionActivacion(self.capas[I][2])
-                    print(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entrada, pesos, umblrales)))
+                print('ENTRADAS x CAPA:', I, '=', len(self.Entradas), 'x', self.capas[I][1])
+                print()
 
+                for J in range(len(self.Entradas[0])):
+
+                    entrada = self.Entradas[:,J]
+
+                    func = layers._FuncionActivacion(self.capas[I][2])
+                    EntradasCapas.append(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entrada, pesos, umblrales)))
+
+                print(np.array(EntradasCapas))
+                print()
+                print()
+                
              # CONDICION PARA CAPAS INTERMEDIAS
             if(I > 0 & I < (len(self.capas) - 2)):
-                print(I-1, I)
+                pesos = self.Generar_pesos(self.capas[I-1][1], self.capas[I][1])
+                umblrales = self.Generar_Umbrales(self.capas[I][1])
 
+                print('CAPA', I-1, 'x CAPA:', I, '=', self.capas[I-1][1], 'x', self.capas[I][1])
+                print()
+
+                for J in range(len(EntradasCapas)):
+
+                    if( J == 0 ):
+                        _EntradasCapas = EntradasCapas
+                        EntradasCapas = []
+
+                    entradasCapas = _EntradasCapas[J][:]
+
+                    func = layers._FuncionActivacion(self.capas[I][2])
+                    EntradasCapas.append(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entradasCapas, pesos, umblrales)))
+
+                print(np.array(EntradasCapas))
+                print()
+                print()
+                
             # CONDICION PARA LA ULTIMA CAPA Y SALIDAS
             if(I >= (len(self.capas) - 1)):
-                print(I, e)
+                pesos = self.Generar_pesos(self.capas[I][1], len(self.Salidas[0]))
+                umblrales = self.Generar_Umbrales(len(self.Salidas[0]))
+
+                print('CAPA', I-1, 'x CAPA:', I, '=', self.capas[I][1], 'x', len(self.Salidas[0]))
+                print(umblrales)
+
+                for J in range(len(EntradasCapas)):
+
+                    entradasCapas = EntradasCapas[J][:]
+
+                    func = layers._FuncionActivacion(self.capas[I][2])
+                    EntradasCapas.append(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entradasCapas, pesos, umblrales)))
+                print(np.array(EntradasCapas))
+                # salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[:,J])
+
 
     # LIMPIAR CAPAS
     def Limpiar(self):
         self.capas = []
+
+    def NormalizarSalidas(self, salida):
+        salidas = []
+        for i in range(len(salida[0])):
+            s = []
+            for j in range(len(salida)):
+                s.append(salida[j][i])
+            salidas.append(s)
+        return salidas
+
 
 if __name__ == '__main__':
     print("Hola") 
