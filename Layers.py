@@ -15,6 +15,19 @@ class Layers:
             soma.append(sumatoria - umbrales[i])
         return soma
 
+    def ErrorLineal(self, salida, _salida):
+        ErrorLienal = []
+        for i in range(len(salida)):
+            ErrorLienal.append(salida[i] - _salida[i])
+        return ErrorLienal
+
+    def ErrorPatron(self, salida, numerodesalidas):
+        ErrorPatron = 0
+        for i in range(len(salida)):
+            ErrorPatron += salida[i]
+        ErrorPatron /= numerodesalidas
+        return ErrorPatron
+
     def _FuncionActivacion(self, e):
         op = 0
         if ("SIGMOIDE" == e):

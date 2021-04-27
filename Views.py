@@ -134,7 +134,7 @@ class Views:
             messagebox.showinfo(message="No ha seleccinado una funcion de activacion para las salidas", title="ERROR")
             return
 
-        self.config.Entrenar(self.entRataAprendizaje.get(), self.entErrorMaximo.get(), self.entNumeroIteraciones.get())
+        self.config.Entrenar(self.entRataAprendizaje.get(), self.entErrorMaximo.get(), self.entNumeroIteraciones.get(), self.comboBoxCapaSalida.get())
 
     def Event_btnAgregarCapas(self):
 

@@ -57,7 +57,7 @@ class Config:
         return pd.DataFrame(data=self.capas, columns=encabezado)
 
     # INICIAR ENTRENAMIENTO
-    def Entrenar(self, rataAprendizaje, errorLineal, numeroIteraciones):
+    def Entrenar(self, rataAprendizaje, errorLineal, numeroIteraciones, funcionSalida):
 
         layers = Layers()
         self.Entradas = np.array(self.Entradas)
@@ -87,7 +87,7 @@ class Config:
                 print()
                 
              # CONDICION PARA CAPAS INTERMEDIAS
-            if(I > 0 & I < (len(self.capas) - 2)):
+            if(I > 0 & I < (len(self.capas) - 1)):
                 pesos = self.Generar_pesos(self.capas[I-1][1], self.capas[I][1])
                 umblrales = self.Generar_Umbrales(self.capas[I][1])
 
@@ -114,18 +114,28 @@ class Config:
                 pesos = self.Generar_pesos(self.capas[I][1], len(self.Salidas[0]))
                 umblrales = self.Generar_Umbrales(len(self.Salidas[0]))
 
-                print('CAPA', I-1, 'x CAPA:', I, '=', self.capas[I][1], 'x', len(self.Salidas[0]))
-                print(umblrales)
+                print('CAPA', I, 'x ENTRADAS', '=', self.capas[I][1], 'x', len(self.Salidas[0]))
+                print()
 
                 for J in range(len(EntradasCapas)):
 
-                    entradasCapas = EntradasCapas[J][:]
+                    if( J == 0 ):
+                        _EntradasCapas = EntradasCapas
+                        EntradasCapas = []
 
-                    func = layers._FuncionActivacion(self.capas[I][2])
-                    EntradasCapas.append(layers.FuncionActivacionCapas(func, layers.FuncionSoma(entradasCapas, pesos, umblrales)))
-                print(np.array(EntradasCapas))
-                # salida = np.array([self.Salidas[J]]) if self.Salidas.ndim==1 else (self.Salidas[:,J])
+                    entradasCapas = _EntradasCapas[J][:]
 
+                    func = layers._FuncionActivacion(funcionSalida)
+                    salida = self.Salidas[J][:]
+                    print(layers.ErrorPatron(
+                        layers.ErrorLineal(salida, 
+                        layers.FuncionActivacionSalidas(func, 
+                        layers.FuncionSoma(entradasCapas, pesos, umblrales))), len(self.Salidas[0])))
+                
+        print()
+        print()
+        print('//////////// - FIN ENTRENAMIENTO - ////////////')
+        print()
 
     # LIMPIAR CAPAS
     def Limpiar(self):
@@ -139,7 +149,6 @@ class Config:
                 s.append(salida[j][i])
             salidas.append(s)
         return salidas
-
 
 if __name__ == '__main__':
     print("Hola") 
