@@ -134,7 +134,7 @@ class Views:
             messagebox.showinfo(message="No ha seleccinado una funcion de activacion para las salidas", title="ERROR")
             return
 
-        self.config.Entrenar(self.entRataAprendizaje.get(), self.entErrorMaximo.get(), self.entNumeroIteraciones.get())
+        self.config.Entrenar(self.entRataAprendizaje.get(), self.entErrorMaximo.get(), self.entNumeroIteraciones.get(), self.comboBoxCapaSalida.get())
 
     def Event_btnAgregarCapas(self):
 
@@ -176,21 +176,9 @@ class Views:
         treeView = ttk.Treeview(self.frameConfigCapasData)
         self.CrearGrid(treeView, self.frameConfigCapasData)
 
-    def FuncionesSalidas(self, e):
-        if ("SIGMOIDE" == e):
-            return 1
-
-        if ("ESCALON" == e):
-            return 2
-
-        if ("LINEAL" == e):
-            return 3
-
-        if ("TANGENTE H." == e):
-            return 2
-
-        if ("GAUSSIANA" == e):
-            return 3
+        self.capa = 1
+        self.entCapa.delete(0, tk.END)
+        self.entCapa.insert(0, self.capa)
 
 if __name__ == '__main__':
     winw = tk.Tk()

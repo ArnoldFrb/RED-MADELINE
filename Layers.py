@@ -15,6 +15,41 @@ class Layers:
             soma.append(sumatoria - umbrales[i])
         return soma
 
+    def ErrorLineal(self, salida, _salida):
+        ErrorLienal = []
+        for i in range(len(salida)):
+            ErrorLienal.append(salida[i] - _salida[i])
+        return ErrorLienal
+
+    def ErrorPatron(self, salida, numerodesalidas):
+        ErrorPatron = 0
+        for i in range(len(salida)):
+            ErrorPatron += salida[i]
+        ErrorPatron /= numerodesalidas
+        return ErrorPatron
+
+    def ActualizarPesosCapas(self, pesos, rataAprendizaje, errorPatron, entradas):
+        for i in range(len(pesos)):
+            for j in range(len(pesos[0])):
+                pesos[i][j] += (rataAprendizaje * errorPatron * entradas[j])
+        return pesos
+
+    def ActualizarPesosSalidas(self, pesos, posicion, rataAprendizaje, errorLineal, entradas):
+        for j in range(len(pesos)):
+            for i in range(len(pesos[0])):
+                pesos[j][posicion] += (rataAprendizaje * errorLineal[posicion] * entradas[i])
+        return pesos
+
+    def ActualizarUmbralesCapas(self, umbrales, rataAprendizaje, errorPatron):
+        for i in range(len(umbrales)):
+            umbrales[i] += (rataAprendizaje * errorPatron * 1)
+        return umbrales
+
+    def ActualizarUmbralesSalidas(self, umbrales, posicion, rataAprendizaje, errorLineal):
+        for i in range(len(umbrales)):
+                umbrales[posicion] += (rataAprendizaje * errorLineal[posicion] * 1)
+        return umbrales
+
     def _FuncionActivacion(self, e):
         op = 0
         if ("SIGMOIDE" == e):
