@@ -128,6 +128,8 @@ class Views:
         self.comboBoxCapasOcultas['state'] = tk.NORMAL
         self.comboBoxCapaSalida['state'] = tk.NORMAL
 
+        self.comboBoxCapasOcultas.delete(0, tk.END)
+        self.comboBoxCapaSalida.delete(0, tk.END)
         self.comboBoxCapasOcultas.insert(0, "SIGMOIDE")
         self.comboBoxCapaSalida.insert(0, "SIGMOIDE")
 

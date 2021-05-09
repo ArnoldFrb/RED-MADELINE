@@ -35,6 +35,9 @@ class Config:
 
     # LLENAR MATRICES ENTRADAS Y SALIDAS
     def NormalizarDatos(self, ruta):
+        self.Entradas = []
+        self.Salidas = []
+        
         Matriz = pd.read_csv(ruta, delimiter=' ')
         col = Matriz.columns
         column = Matriz.to_numpy()
