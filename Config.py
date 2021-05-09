@@ -235,7 +235,7 @@ class Config:
 
                             if(_ErrorLineal[indexM] < ErrorLineal[indexM]):
                                 _DimensionPesos[z][:][:] = PesosTemporales
-                                _DimensionUmbrales[z][:][:] = UmbralesTemporales
+                                _DimensionUmbrales[z][:] = UmbralesTemporales
                                 print('PESOS ACTUALIZADOS')
                                 print(np.array(_DimensionPesos[z][:][:]))
                                 print()
