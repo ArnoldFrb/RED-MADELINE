@@ -128,6 +128,9 @@ class Views:
         self.comboBoxCapasOcultas['state'] = tk.NORMAL
         self.comboBoxCapaSalida['state'] = tk.NORMAL
 
+        self.comboBoxCapasOcultas.insert(0, "SIGMOIDE")
+        self.comboBoxCapaSalida.insert(0, "SIGMOIDE")
+
     def Event_btnEntrenar(self):
 
         if(self.comboBoxCapaSalida.get() == ''):
