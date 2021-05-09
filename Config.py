@@ -6,6 +6,7 @@ from Layers import *
 from heapq import nsmallest
 import tkinter as tk
 
+
 class Config:
 
     #CONSTRUCTOR
