@@ -21,6 +21,15 @@ class Layers:
             ErrorLienal.append(salida[i] - _salida[i])
         return ErrorLienal
 
+    def ErrorNoLineal(self, errorLienal, pesos):
+        ErrorNoLienal = []
+        for j in range(len(pesos)):
+            suma = 0
+            for i in range(len(pesos[0])):
+                suma += errorLienal[i] - pesos[j][i]
+            ErrorNoLienal.append(suma)
+        return ErrorNoLienal
+
     def ErrorPatron(self, salida, numerodesalidas):
         ErrorPatron = 0
         for i in range(len(salida)):
@@ -28,10 +37,10 @@ class Layers:
         ErrorPatron /= numerodesalidas
         return ErrorPatron
 
-    def ActualizarPesosCapas(self, pesos, rataAprendizaje, errorPatron, entradas):
-        for i in range(len(pesos)):
-            for j in range(len(pesos[0])):
-                pesos[i][j] += (rataAprendizaje * errorPatron * entradas[j])
+    def ActualizarPesosCapas(self, pesos, posicion, rataAprendizaje, errorPatron, entradas):
+        for j in range(len(pesos)):
+            for i in range(len(pesos[0])):
+                pesos[j][posicion] += (rataAprendizaje * errorPatron * entradas[i])
         return pesos
 
     def ActualizarPesosSalidas(self, pesos, posicion, rataAprendizaje, errorLineal, entradas):
@@ -40,9 +49,9 @@ class Layers:
                 pesos[j][posicion] += (rataAprendizaje * errorLineal[posicion] * entradas[i])
         return pesos
 
-    def ActualizarUmbralesCapas(self, umbrales, rataAprendizaje, errorPatron):
+    def ActualizarUmbralesCapas(self, umbrales, posicion, rataAprendizaje, errorPatron):
         for i in range(len(umbrales)):
-            umbrales[i] += (rataAprendizaje * errorPatron * 1)
+                umbrales[posicion] += (rataAprendizaje * errorPatron * 1)
         return umbrales
 
     def ActualizarUmbralesSalidas(self, umbrales, posicion, rataAprendizaje, errorLineal):
