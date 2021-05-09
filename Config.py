@@ -1,8 +1,10 @@
 import random as rn
+import tkinter as tk
 import numpy as np
 import pandas as pd
 import os
 from Layers import *
+from Views import *
 
 class Config:
 
@@ -256,4 +258,6 @@ class Config:
         return salidas
 
 if __name__ == '__main__':
-    print("Hola") 
+    winw = tk.Tk()
+    Views(winw)
+    winw.mainloop()
