@@ -269,10 +269,19 @@ class Config:
                             print(np.array(self.Error_Lineal[z]))
                             print()
 
-                        if(z >= (len(CapasInversa)-1)):
+                            _Error_Lineal = self.Error_Lineal[z]
 
-                            print(np.array(self.Error_Lineal[z]))
-                            print(np.array(_DimensionPesos[z][:][:]))
+                            for i in range(len(_Error_Lineal)):
+                                if(_Error_Lineal):
+                                    Cero = nsmallest(i+1, _Error_Lineal, key=lambda x: abs(x-0))
+                                    print('ERRORES CERCANO A CERO:', i+1)
+                                    print(np.array(Cero))
+                                    print()
+
+                                    for error in Cero:
+                                        _Error_Lineal = list( filter(lambda x: x != error, _Error_Lineal) )
+
+                        if(z >= (len(CapasInversa)-1)):
 
                             self.Error_Lineal.append(layers.ErrorNoLineal(self.Error_Lineal[z], _DimensionPesos[z][:][:]))
                             print('ERROR NO LIEAL CAPA', z+1)
