@@ -202,6 +202,9 @@ class Config:
                     for z in range(len(CapasInversa)):
 
                         if(z == 0):
+                            print('SALIDA')
+                            print()
+
                             ErrorLienalMenor = np.amin(ErrorLineal)
                             indexM = ErrorLineal.index(ErrorLienalMenor)
                             print('ERROR LINEAL MENOR:', ErrorLienalMenor, 'INDEX:', indexM)
@@ -269,6 +272,14 @@ class Config:
                             print(np.array(self.Error_Lineal[z]))
                             print()
 
+                            print('PESOS:')
+                            print(np.array(_DimensionPesos[z][:][:]))
+                            print()
+
+                            print('Umbrales:')
+                            print(np.array(_DimensionUmbrales[z][:][:]))
+                            print()
+
                             _Error_Lineal = self.Error_Lineal[z]
 
                             for i in range(len(_Error_Lineal)):
@@ -279,7 +290,31 @@ class Config:
                                     print()
 
                                     for error in Cero:
+                                        index = self.Error_Lineal[z].index(error)
+                                        print('ERROR LINEAL CERCANO A CERO:', error, 'INDEX:', index)
+                                        print()
+
+                                        PesosTemporales = layers.ActualizarPesosCapas(
+                                            _DimensionPesos[z][:][:], index, int(rataAprendizaje), _ErrorPatron, NuevaEntrada_[z]
+                                        )
+
+                                        print('PESOS TEMPORALES:')
+                                        print(np.array(PesosTemporales))
+                                        print()
+
+                                        UmbralesTemporales = layers.ActualizarUmbralesCapas(
+                                            _DimensionUmbrales[z][:][:], index, int(rataAprendizaje), _ErrorPatron
+                                        )
+
+                                        print('UMBRALES TEMPORALES:')
+                                        print(np.array(UmbralesTemporales))
+                                        print()
+
                                         _Error_Lineal = list( filter(lambda x: x != error, _Error_Lineal) )
+
+                                    print('-------------------------------------------------------------')
+                                    print()
+                                    print()
 
                         if(z >= (len(CapasInversa)-1)):
 
