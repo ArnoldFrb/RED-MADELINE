@@ -37,7 +37,7 @@ class Config:
     def NormalizarDatos(self, ruta):
         self.Entradas = []
         self.Salidas = []
-        
+
         Matriz = pd.read_csv(ruta, delimiter=' ')
         col = Matriz.columns
         column = Matriz.to_numpy()
@@ -197,6 +197,8 @@ class Config:
                     print('------ACTUALIZAR PESOS Y UMBRALES------')
                     print()
 
+                    self.Error_Lineal = []
+
                     for z in range(len(CapasInversa)):
 
                         if(z == 0):
@@ -229,14 +231,14 @@ class Config:
                             print()
 
                             print('NUEVO ERROR LINEAL')
-                            _ErrorLineal = layers.ErrorLineal(salida, _NuevaEntrada)
-                            print(_ErrorLineal)
+                            self.Error_Lineal.append(layers.ErrorLineal(salida, _NuevaEntrada))
+                            print(self.Error_Lineal[z])
                             print()
 
-                            print('ES MENOR EL NUEVO ERROR:', _ErrorLineal[indexM] < ErrorLineal[indexM])
+                            print('ES MENOR EL NUEVO ERROR:', self.Error_Lineal[z][indexM] < ErrorLineal[indexM])
                             print()
 
-                            if(_ErrorLineal[indexM] < ErrorLineal[indexM]):
+                            if(self.Error_Lineal[z][indexM] < ErrorLineal[indexM]):
                                 _DimensionPesos[z][:][:] = PesosTemporales
                                 _DimensionUmbrales[z][:] = UmbralesTemporales
                                 print('PESOS ACTUALIZADOS')
@@ -258,6 +260,23 @@ class Config:
 
                             print('//////////////////////////////////////////////////////////////////')
                             print('//////////////////////////////////////////////////////////////////')
+                            print()
+                        
+                        if(z > 0 & z < (len(CapasInversa) - 1)):
+
+                            self.Error_Lineal.append(layers.ErrorNoLineal(self.Error_Lineal[z-1], _DimensionPesos[z-1][:][:]))
+                            print('ERROR NO LIEAL CAPA', z)
+                            print(np.array(self.Error_Lineal[z]))
+                            print()
+
+                        if(z >= (len(CapasInversa)-1)):
+
+                            print(np.array(self.Error_Lineal[z]))
+                            print(np.array(_DimensionPesos[z][:][:]))
+
+                            self.Error_Lineal.append(layers.ErrorNoLineal(self.Error_Lineal[z], _DimensionPesos[z][:][:]))
+                            print('ERROR NO LIEAL CAPA', z+1)
+                            print(np.array(self.Error_Lineal[z+1]))
                             print()
 
                     DimensionPesos = _DimensionPesos[::-1]
