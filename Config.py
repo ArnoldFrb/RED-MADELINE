@@ -216,13 +216,13 @@ class Config:
 
                             print('PESOS TEMPORALES')
                             PesosTemporales = layers.ActualizarPesosSalidas(
-                                _DimensionPesos[z][:][:], indexM, int(rataAprendizaje), ErrorLineal, NuevaEntrada_[z])
+                                _DimensionPesos[z], indexM, int(rataAprendizaje), ErrorLineal, NuevaEntrada_[z])
                             print(np.array(PesosTemporales))
                             print()
 
                             print('UMBRALES TEMPORALES')
                             UmbralesTemporales = layers.ActualizarUmbralesSalidas(
-                                _DimensionUmbrales[z][:][:], indexM, int(rataAprendizaje), ErrorLineal)
+                                _DimensionUmbrales[z], indexM, int(rataAprendizaje), ErrorLineal)
                             print(np.array(UmbralesTemporales))
                             print()
 
@@ -239,26 +239,27 @@ class Config:
                             print()
 
                             print('ES MENOR EL NUEVO ERROR:', self.Error_Lineal[z][indexM] < ErrorLineal[indexM])
+                            print('NUEVO:', self.Error_Lineal[z][indexM], '< ANTIGUAO:', ErrorLineal[indexM])
                             print()
 
                             if(self.Error_Lineal[z][indexM] < ErrorLineal[indexM]):
-                                _DimensionPesos[z][:][:] = PesosTemporales
-                                _DimensionUmbrales[z][:] = UmbralesTemporales
+                                _DimensionPesos[z] = PesosTemporales
+                                _DimensionUmbrales[z] = UmbralesTemporales
                                 print('PESOS ACTUALIZADOS')
-                                print(np.array(_DimensionPesos[z][:][:]))
+                                print(np.array(_DimensionPesos[z]))
                                 print()
 
                                 print('UMBRALES ACTUALIZADOS')
-                                print(np.array(_DimensionUmbrales[z][:][:]))
+                                print(np.array(_DimensionUmbrales[z]))
                                 print()
                             else:
                                 print('NO SE ACTUALIZAN PESOS Y UMBRALES')
                                 print('PESOS')
-                                print(np.array(_DimensionPesos[z][:][:]))
+                                print(np.array(_DimensionPesos[z]))
                                 print()
 
                                 print('UMBRALES')
-                                print(np.array(_DimensionUmbrales[z][:][:]))
+                                print(np.array(_DimensionUmbrales[z]))
                                 print()
 
                             print('//////////////////////////////////////////////////////////////////')
@@ -273,11 +274,11 @@ class Config:
                             print()
 
                             print('PESOS:')
-                            print(np.array(_DimensionPesos[z][:][:]))
+                            print(np.array(_DimensionPesos[z]))
                             print()
 
                             print('Umbrales:')
-                            print(np.array(_DimensionUmbrales[z][:][:]))
+                            print(np.array(_DimensionUmbrales[z]))
                             print()
 
                             _Error_Lineal = self.Error_Lineal[z]
@@ -294,21 +295,36 @@ class Config:
                                         print('ERROR LINEAL CERCANO A CERO:', error, 'INDEX:', index)
                                         print()
 
-                                        PesosTemporales = layers.ActualizarPesosCapas(
-                                            _DimensionPesos[z][:][:], index, int(rataAprendizaje), _ErrorPatron, NuevaEntrada_[z]
-                                        )
+                                        PesosTemporales = layers.ActualizarPesosSalidas(
+                                            _DimensionPesos[z], indexM, int(rataAprendizaje), self.Error_Lineal[z], NuevaEntrada_[z])
+
+                                        print('PESOS:')
+                                        print(np.array( _DimensionPesos[z]))
+                                        print()
 
                                         print('PESOS TEMPORALES:')
                                         print(np.array(PesosTemporales))
                                         print()
 
                                         UmbralesTemporales = layers.ActualizarUmbralesCapas(
-                                            _DimensionUmbrales[z][:][:], index, int(rataAprendizaje), _ErrorPatron
+                                            _DimensionUmbrales[z], index, int(rataAprendizaje), _ErrorPatron
                                         )
+
+                                        print('UMBRALES:')
+                                        print(np.array(_DimensionUmbrales[z]))
+                                        print()
 
                                         print('UMBRALES TEMPORALES:')
                                         print(np.array(UmbralesTemporales))
                                         print()
+
+                                        # ind = 0
+                                        # for j in range(len(self.capas)):
+                                        #     if (DimensionPesos[z] == _DimensionPesos[j]):
+                                        #         ind = j
+
+                                        # for i in range(ind, len(self.capas)):
+                                        #     print()
 
                                         _Error_Lineal = list( filter(lambda x: x != error, _Error_Lineal) )
 
