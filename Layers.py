@@ -38,10 +38,11 @@ class Layers:
         return ErrorPatron
 
     def ActualizarPesosCapas(self, pesos, posicion, rataAprendizaje, errorPatron, entradas):
+        _pesos = pesos[:]
         for j in range(len(pesos)):
             for i in range(len(pesos[0])):
-                pesos[j][posicion] += (rataAprendizaje * errorPatron * entradas[i])
-        return pesos
+                _pesos[j][posicion] += (rataAprendizaje * errorPatron * entradas[i])
+        return _pesos
 
     def ActualizarPesosSalidas(self, pesos, posicion, rataAprendizaje, errorLineal, entradas):
         for j in range(len(pesos)):
