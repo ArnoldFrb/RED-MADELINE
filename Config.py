@@ -2,10 +2,10 @@ import random as rn
 import numpy as np
 import pandas as pd
 import os
-from Layers import *
+from Funtions import *
 from heapq import nsmallest
 import tkinter as tk
-
+import copy as cp
 
 class Config:
 
@@ -15,23 +15,6 @@ class Config:
         self.Salidas = []
         self.Entranamiento = ''
         self.capas = []
-    
-    #METODO PARA GENERAR PESOS
-    def Generar_pesos(self, row, col):
-        Matriz = []
-        for N in range(row):
-            Fila = []
-            for M in range(col):
-                Fila.append(round(rn.uniform(-1, 1), 2))
-            Matriz.append(Fila)
-        return Matriz
-
-    #METODO PARA GENERAR UMBRALES
-    def Generar_Umbrales(self, row):
-        Fila = []
-        for N in range(row):
-            Fila.append(round(rn.uniform(-1, 1), 2))
-        return Fila
 
     # LLENAR MATRICES ENTRADAS Y SALIDAS
     def NormalizarDatos(self, ruta):
@@ -65,7 +48,7 @@ class Config:
     # INICIAR ENTRENAMIENTO
     def Entrenar(self, rataAprendizaje, errorMaximo, numeroIteraciones, funcionSalida):
 
-        layers = Layers()
+        func = Funtions()
         self.Entradas = self.NormalizarEntradas(self.Entradas)
         self.Salidas = self.NormalizarSalidas(self.Salidas) if len(self.Salidas)==1 else self._NormalizarSalidas(self.Salidas)
 
@@ -75,18 +58,18 @@ class Config:
 
             # CONDICION PARA ENTRADA Y CAPA 1
             if(I == 0):
-                DimensionPesos.append(self.Generar_pesos(len(self.Entradas[0]), self.capas[I][1]))
-                DimensionUmbrales.append(self.Generar_Umbrales(self.capas[I][1]))
+                DimensionPesos.append(func.Generar_pesos(len(self.Entradas[0]), self.capas[I][1]))
+                DimensionUmbrales.append(func.Generar_Umbrales(self.capas[I][1]))
                 
              # CONDICION PARA CAPAS INTERMEDIAS
             if(I > 0 & I < (len(self.capas) - 1)):
-                DimensionPesos.append(self.Generar_pesos(self.capas[I-1][1], self.capas[I][1]))
-                DimensionUmbrales.append(self.Generar_Umbrales(self.capas[I][1]))
+                DimensionPesos.append(func.Generar_pesos(self.capas[I-1][1], self.capas[I][1]))
+                DimensionUmbrales.append(func.Generar_Umbrales(self.capas[I][1]))
                 
             # CONDICION PARA LA ULTIMA CAPA Y SALIDAS
             if(I >= (len(self.capas)-1)):
-                DimensionPesos.append(self.Generar_pesos(self.capas[I][1], len(self.Salidas[0])))
-                DimensionUmbrales.append(self.Generar_Umbrales(len(self.Salidas[0])))
+                DimensionPesos.append(func.Generar_pesos(self.capas[I][1], len(self.Salidas[0])))
+                DimensionUmbrales.append(func.Generar_Umbrales(len(self.Salidas[0])))
         
         for x in range(len(self.Entradas)): # ARRAY PARA PRESENTAR PATRONES
 
@@ -119,9 +102,9 @@ class Config:
 
                     print('FUNCION ACTIVACION NO LINEAL:', self.capas[y][2])
                     NuevaEntrada.append(
-                        layers.FuncionActivacionCapas(
-                            layers._FuncionActivacion(self.capas[y][2]), 
-                            layers.FuncionSoma(entrada, DimensionPesos[y][:][:], DimensionUmbrales[y][:][:])))
+                        func.FuncionActivacionCapas(
+                            func._FuncionActivacion(self.capas[y][2]), 
+                            func.FuncionSoma(entrada, DimensionPesos[y][:][:], DimensionUmbrales[y][:][:])))
                     print(np.array(NuevaEntrada))
                     print()
                     print('----------------------------------------')
@@ -144,9 +127,9 @@ class Config:
 
                     print('FUNCION ACTIVACION NO LINEAL:', self.capas[y][2])
                     NuevaEntrada.append(
-                        layers.FuncionActivacionCapas(
-                            layers._FuncionActivacion(self.capas[y][2]), 
-                            layers.FuncionSoma(NuevaEntrada[y-1], DimensionPesos[y][:][:], DimensionUmbrales[y][:][:])))
+                        func.FuncionActivacionCapas(
+                            func._FuncionActivacion(self.capas[y][2]), 
+                            func.FuncionSoma(NuevaEntrada[y-1], DimensionPesos[y][:][:], DimensionUmbrales[y][:][:])))
                     print(np.array(NuevaEntrada[y]))
                     print()
                     print('----------------------------------------')
@@ -169,14 +152,14 @@ class Config:
 
                     print('FUNCION ACTIVACION LIENAL:', funcionSalida)
                     NuevaEntrada.append(
-                        layers.FuncionActivacionCapas(
-                            layers._FuncionActivacion(funcionSalida), 
-                            layers.FuncionSoma(NuevaEntrada[y], DimensionPesos[len(self.capas)][:][:], DimensionUmbrales[len(self.capas)][:][:])))
+                        func.FuncionActivacionCapas(
+                            func._FuncionActivacion(funcionSalida), 
+                            func.FuncionSoma(NuevaEntrada[y], DimensionPesos[len(self.capas)][:][:], DimensionUmbrales[len(self.capas)][:][:])))
                     print(np.array(NuevaEntrada[y+1]))
                     print()
 
                     print('ERROR LINEAL')
-                    ErrorLineal = layers.ErrorLineal(salida, NuevaEntrada[y+1])
+                    ErrorLineal = func.ErrorLineal(salida, NuevaEntrada[y+1])
                     print(ErrorLineal)
                     print()
 
@@ -189,9 +172,6 @@ class Config:
                     _DimensionPesos = DimensionPesos[::-1]
                     _DimensionUmbrales = DimensionUmbrales[::-1]
                     NuevaEntrada_ = NuevaEntrada[::-1]
-
-                    _PesosTempo = 0
-                    _UmbralesTempo = 0
 
                     print('///////////////////////////////////////')
                     print('------ACTUALIZAR PESOS Y UMBRALES------')
@@ -215,26 +195,26 @@ class Config:
                             print()
 
                             print('PESOS TEMPORALES')
-                            PesosTemporales = layers.ActualizarPesosSalidas(
-                                _DimensionPesos[z][:][:], indexM, int(rataAprendizaje), ErrorLineal, NuevaEntrada_[z])
+                            PesosTemporales = func.ActualizarPesosSalidas(
+                                cp.deepcopy(_DimensionPesos[z]), indexM, int(rataAprendizaje), ErrorLineal, NuevaEntrada_[z])
                             print(np.array(PesosTemporales))
                             print()
 
                             print('UMBRALES TEMPORALES')
-                            UmbralesTemporales = layers.ActualizarUmbralesSalidas(
-                                _DimensionUmbrales[z][:], indexM, int(rataAprendizaje), ErrorLineal)
+                            UmbralesTemporales = func.ActualizarUmbralesSalidas(
+                                cp.deepcopy(_DimensionUmbrales[z]), indexM, int(rataAprendizaje), ErrorLineal)
                             print(np.array(UmbralesTemporales))
                             print()
 
                             print('NUEVO FUNCION ACTIVACION LIENAL:', funcionSalida)
-                            _NuevaEntrada = layers.FuncionActivacionCapas(
-                                layers._FuncionActivacion(funcionSalida), 
-                                layers.FuncionSoma(NuevaEntrada_[z+1], PesosTemporales, UmbralesTemporales))
+                            _NuevaEntrada = func.FuncionActivacionCapas(
+                                func._FuncionActivacion(funcionSalida), 
+                                func.FuncionSoma(NuevaEntrada_[z+1], PesosTemporales, UmbralesTemporales))
                             print(np.array(_NuevaEntrada))
                             print()
 
                             print('NUEVO ERROR LINEAL')
-                            self.Error_Lineal.append(layers.ErrorLineal(salida, _NuevaEntrada))
+                            self.Error_Lineal.append(func.ErrorLineal(salida, _NuevaEntrada))
                             print(self.Error_Lineal[z])
                             print()
 
@@ -243,8 +223,8 @@ class Config:
                             print()
 
                             if(self.Error_Lineal[z][indexM] < ErrorLineal[indexM]):
-                                _DimensionPesos[z][:][:] = PesosTemporales[:]
-                                _DimensionUmbrales[z][:] = UmbralesTemporales[:]
+                                _DimensionPesos[z] = cp.deepcopy(PesosTemporales)
+                                _DimensionUmbrales[z] = cp.deepcopy(UmbralesTemporales)
                                 print('PESOS ACTUALIZADOS')
                                 print(np.array(_DimensionPesos[z]))
                                 print()
@@ -268,7 +248,7 @@ class Config:
                         
                         if(z > 0 & z < (len(CapasInversa) - 1)):
 
-                            self.Error_Lineal.append(layers.ErrorNoLineal(self.Error_Lineal[z-1], _DimensionPesos[z-1][:][:]))
+                            self.Error_Lineal.append(func.ErrorNoLineal(self.Error_Lineal[z-1], _DimensionPesos[z-1][:][:]))
                             print('ERROR NO LIEAL CAPA', z)
                             print(np.array(self.Error_Lineal[z]))
                             print()
@@ -282,7 +262,10 @@ class Config:
                             print(np.array(_DimensionUmbrales[z]))
                             print()
 
-                            _Error_Lineal = self.Error_Lineal[z]
+                            _pesos = cp.deepcopy(_DimensionPesos)
+                            _umbrales = cp.deepcopy(_DimensionUmbrales)
+
+                            _Error_Lineal = cp.deepcopy(self.Error_Lineal[z])
 
                             for i in range(len(_Error_Lineal)):
                                 if(_Error_Lineal):
@@ -296,35 +279,24 @@ class Config:
                                         print('ERROR LINEAL CERCANO A CERO:', error, 'INDEX:', index)
                                         print()
 
-                                        print('PESOS:')
-                                        print(np.array( _DimensionPesos[z]))
-                                        print(id(_DimensionPesos[z]))
-                                        print()
-
-                                        PesosTemporales = layers.ActualizarPesosCapas(
-                                            _DimensionPesos[z][:][:], indexM, int(rataAprendizaje), _ErrorPatron, NuevaEntrada_[z])
-
-                                        print('PESOS:')
-                                        print(np.array( _DimensionPesos[z]))
-                                        print(id(_DimensionPesos[z]))
-                                        print()
-
-                                        print('PESOS TEMPORALES:')
-                                        print(np.array(PesosTemporales))
-                                        print(id(PesosTemporales))
-                                        print()
-
-                                        UmbralesTemporales = layers.ActualizarUmbralesCapas(
-                                            _DimensionUmbrales[z][:], index, int(rataAprendizaje), _ErrorPatron
+                                        func.ActualizarPesosCapas(
+                                            _pesos[z], index, int(rataAprendizaje), _ErrorPatron, NuevaEntrada_[z]
                                         )
 
-                                        print('UMBRALES:')
-                                        print(np.array(_DimensionUmbrales[z]))
+                                        print('PESOS TEMPORALES:')
+                                        print(np.array(_pesos[z]))
                                         print()
 
+                                        func.ActualizarUmbralesCapas(
+                                            _umbrales[z], index, int(rataAprendizaje), _ErrorPatron
+                                        )
+
                                         print('UMBRALES TEMPORALES:')
-                                        print(np.array(UmbralesTemporales))
+                                        print(np.array(_umbrales[z]))
                                         print()
+
+                                        _pesos = _pesos[::-1]
+                                        _umbrales = _umbrales[::-1]
 
                                         ind = 0
                                         for j in range(len(self.capas)):
@@ -336,26 +308,29 @@ class Config:
                                             if(j > 0 & j < (len(self.capas) - 1)):
                                                 
                                                 NuevaEntrada[j] = (
-                                                    layers.FuncionActivacionCapas(
-                                                        layers._FuncionActivacion(self.capas[j][2]), 
-                                                        layers.FuncionSoma(NuevaEntrada[j-1], DimensionPesos[j], DimensionUmbrales[j])))
+                                                    func.FuncionActivacionCapas(
+                                                        func._FuncionActivacion(self.capas[j][2]), 
+                                                        func.FuncionSoma(NuevaEntrada[j-1], _pesos[j], _umbrales[j])))
 
                                             if(j >= (len(self.capas)-1)):
                                                 
                                                 NuevaEntrada[j+1] = (
-                                                    layers.FuncionActivacionCapas(
-                                                        layers._FuncionActivacion(funcionSalida), 
-                                                        layers.FuncionSoma(NuevaEntrada[j], DimensionPesos[len(self.capas)], DimensionUmbrales[len(self.capas)])))
+                                                    func.FuncionActivacionCapas(
+                                                        func._FuncionActivacion(funcionSalida), 
+                                                        func.FuncionSoma(NuevaEntrada[j], _pesos[len(self.capas)], _umbrales[len(self.capas)])))
                                                 
-                                                NuevoErrorLineal = layers.ErrorLineal(salida, NuevaEntrada[j+1])
+                                                NuevoErrorLineal = func.ErrorLineal(salida, cp.deepcopy(NuevaEntrada[j+1]))
 
-                                                print('ES MENOR EL NUEVO ERROR:', NuevoErrorLineal[0] < ErrorLineal[0])
-                                                print('NUEVO:', NuevoErrorLineal[0], '< ANTIGUAO:', ErrorLineal[0])
+                                                print('ES MENOR EL NUEVO ERROR:', NuevoErrorLineal < ErrorLineal)
+                                                print('NUEVO:', NuevoErrorLineal, '< ANTIGUAO:', ErrorLineal)
                                                 print()
 
-                                                if(NuevoErrorLineal[0] < ErrorLineal[0]):
-                                                    _DimensionPesos[z][:][:] = PesosTemporales[:]
-                                                    _DimensionUmbrales[z][:] = UmbralesTemporales[:]
+                                                if(NuevoErrorLineal < ErrorLineal):
+                                                    _pesos = _pesos[::-1]
+                                                    _umbrales = _umbrales[::-1]
+                                                    _DimensionPesos = cp.deepcopy(_pesos)
+                                                    _DimensionUmbrales = cp.deepcopy(_umbrales)
+
                                                     print('PESOS ACTUALIZADOS')
                                                     print(np.array(_DimensionPesos[z]))
                                                     print()
@@ -381,10 +356,111 @@ class Config:
 
                         if(z >= (len(CapasInversa)-1)):
 
-                            self.Error_Lineal.append(layers.ErrorNoLineal(self.Error_Lineal[z], _DimensionPesos[z][:][:]))
+                            self.Error_Lineal.append(func.ErrorNoLineal(self.Error_Lineal[z], _DimensionPesos[z][:][:]))
                             print('ERROR NO LIEAL CAPA', z+1)
                             print(np.array(self.Error_Lineal[z+1]))
                             print()
+
+                            print('PESOS:')
+                            print(np.array(_DimensionPesos[z+1]))
+                            print(id(_DimensionPesos[z+1]))
+                            print()
+
+                            print('Umbrales:')
+                            print(np.array(_DimensionUmbrales[z+1]))
+                            print()
+
+                            _pesos = cp.deepcopy(_DimensionPesos)
+                            _umbrales = cp.deepcopy(_DimensionUmbrales)
+
+                            _Error_Lineal = cp.deepcopy(self.Error_Lineal[z+1])
+
+                            for i in range(len(_Error_Lineal)):
+                                if(_Error_Lineal):
+                                    Cero = nsmallest(i+1, _Error_Lineal, key=lambda x: abs(x-0))
+                                    print('ERRORES CERCANO A CERO:', i+1)
+                                    print(np.array(Cero))
+                                    print()
+
+                                    for error in Cero:
+                                        index = self.Error_Lineal[z+1].index(error)
+                                        print('ERROR LINEAL CERCANO A CERO:', error, 'INDEX:', index)
+                                        print()
+
+                                        func.ActualizarPesosCapas(
+                                            _pesos[z+1], index, int(rataAprendizaje), _ErrorPatron, NuevaEntrada_[z+1]
+                                        )
+
+                                        print('PESOS TEMPORALES:')
+                                        print(np.array(_pesos[z+1]))
+                                        print()
+
+                                        func.ActualizarUmbralesCapas(
+                                            _umbrales[z+1], index, int(rataAprendizaje), _ErrorPatron
+                                        )
+
+                                        print('UMBRALES TEMPORALES:')
+                                        print(np.array(_umbrales[z+1]))
+                                        print()
+
+                                        _pesos = _pesos[::-1]
+                                        _umbrales = _umbrales[::-1]
+
+                                        ind = 0
+                                        for j in range(len(self.capas)):
+                                            if (_DimensionPesos[z+1] == DimensionPesos[j]):
+                                                ind = j
+
+                                        for j in range(ind, len(self.capas)):
+                                            
+                                            if(j > 0 & j < (len(self.capas) - 1)):
+                                                
+                                                NuevaEntrada[j] = (
+                                                    func.FuncionActivacionCapas(
+                                                        func._FuncionActivacion(self.capas[j][2]), 
+                                                        func.FuncionSoma(NuevaEntrada[j-1], _pesos[j], _umbrales[j])))
+
+                                            if(j >= (len(self.capas)-1)):
+                                                
+                                                NuevaEntrada[j+1] = (
+                                                    func.FuncionActivacionCapas(
+                                                        func._FuncionActivacion(funcionSalida), 
+                                                        func.FuncionSoma(NuevaEntrada[j], _pesos[len(self.capas)], _umbrales[len(self.capas)])))
+                                                
+                                                NuevoErrorLineal = func.ErrorLineal(salida, cp.deepcopy(NuevaEntrada[j+1]))
+
+                                                print('ES MENOR EL NUEVO ERROR:', NuevoErrorLineal < ErrorLineal)
+                                                print('NUEVO:', NuevoErrorLineal, '< ANTIGUAO:', ErrorLineal)
+                                                print()
+
+                                                if(NuevoErrorLineal < ErrorLineal):
+                                                    _pesos = _pesos[::-1]
+                                                    _umbrales = _umbrales[::-1]
+                                                    _DimensionPesos = cp.deepcopy(_pesos)
+                                                    _DimensionUmbrales = cp.deepcopy(_umbrales)
+
+                                                    print('PESOS ACTUALIZADOS')
+                                                    print(np.array(_DimensionPesos[z+1]))
+                                                    print()
+
+                                                    print('UMBRALES ACTUALIZADOS')
+                                                    print(np.array(_DimensionUmbrales[z+1]))
+                                                    print()
+                                                else:
+                                                    print('NO SE ACTUALIZAN PESOS Y UMBRALES')
+                                                    print('PESOS')
+                                                    print(np.array(_DimensionPesos[z+1]))
+                                                    print()
+
+                                                    print('UMBRALES')
+                                                    print(np.array(_DimensionUmbrales[z+1]))
+                                                    print()
+
+                                        _Error_Lineal = list( filter(lambda x: x != error, _Error_Lineal) )
+
+                                    print('//////////// - FIN PATRON - ////////////')
+                                    print()
+                                    print()
 
                     DimensionPesos = _DimensionPesos[::-1]
                     DimensionUmbrales = _DimensionUmbrales[::-1]

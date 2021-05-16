@@ -1,10 +1,27 @@
 import numpy as np
 import random as rn
 
-class Layers:
+class Funtions:
 
     def __init__(self):
         print()
+
+    #METODO PARA GENERAR PESOS
+    def Generar_pesos(self, row, col):
+        Matriz = []
+        for N in range(row):
+            Fila = []
+            for M in range(col):
+                Fila.append(round(rn.uniform(-1, 1), 2))
+            Matriz.append(Fila)
+        return Matriz
+
+    #METODO PARA GENERAR UMBRALES
+    def Generar_Umbrales(self, row):
+        Fila = []
+        for N in range(row):
+            Fila.append(round(rn.uniform(-1, 1), 2))
+        return Fila
 
     def FuncionSoma(self, entrada, pesos, umbrales):
         soma = []
@@ -38,11 +55,10 @@ class Layers:
         return ErrorPatron
 
     def ActualizarPesosCapas(self, pesos, posicion, rataAprendizaje, errorPatron, entradas):
-        _pesos = pesos[:]
         for j in range(len(pesos)):
             for i in range(len(pesos[0])):
-                _pesos[j][posicion] += (rataAprendizaje * errorPatron * entradas[i])
-        return _pesos
+                pesos[j][posicion] += (rataAprendizaje * errorPatron * entradas[i])
+        return pesos
 
     def ActualizarPesosSalidas(self, pesos, posicion, rataAprendizaje, errorLineal, entradas):
         for j in range(len(pesos)):
